@@ -1,5 +1,4 @@
 <%@ page import="java.util.List, model.Borrow" %>
-<%@ include file="nav-bar.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +17,6 @@
             background-color: #f4f4f4;
             min-height: 100vh;
             padding: 16px;
-            display: flex;
             flex-direction: column;
             align-items: center;
         }
@@ -38,6 +36,9 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .message {
@@ -67,6 +68,11 @@
             border-radius: 4px;
         }
 
+        .main-container {
+            display: flex;
+            justify-content: center;
+        }
+
         @media (max-width: 640px) {
             .container {
                 padding: 16px;
@@ -87,7 +93,9 @@
     </style>
 </head>
 <body>
+<%@ include file="nav-bar.jsp" %>
 <h2>Penalty Notifications</h2>
+<div class="main-container">
 <div class="container">
     <%
         List penalties = (List) request.getAttribute("penalties");
@@ -104,6 +112,7 @@
             }
         }
     %>
+</div>
 </div>
 </body>
 </html>
