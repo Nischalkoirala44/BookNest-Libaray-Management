@@ -156,7 +156,7 @@
     <% if (request.getAttribute("errorMessage") != null) { %>
     <p class="error"><%= request.getAttribute("errorMessage") %></p>
     <% } %>
-
+    
     <!-- Dashboard Statistics -->
     <div class="dashboard-stats">
         <%
@@ -165,14 +165,14 @@
             Integer totalBooks = (Integer) request.getAttribute("totalBooks");
             Integer currentlyBorrowed = (Integer) request.getAttribute("currentlyBorrowed");
             Integer totalBorrows = (Integer) request.getAttribute("totalBorrows");
-
+            
             // If attributes are null (direct access to JSP), calculate them
             if (totalUsers == null || totalBooks == null || currentlyBorrowed == null || totalBorrows == null) {
                 try {
                     BookDAO bookDAO = new BookDAO();
                     UserDAO userDAO = new UserDAO();
                     BorrowDAO borrowDAO = new BorrowDAO();
-
+                    
                     totalUsers = userDAO.getAllUsers().size();
                     totalBooks = bookDAO.getAllBooks().size();
                     currentlyBorrowed = borrowDAO.getAllDetailedBorrows().size();
@@ -215,7 +215,7 @@
             </div>
         </div>
     </div>
-
+    
     <h2 class="section-title">📚 Book Management</h2>
     <div class="stat-card" style="cursor: pointer;" onclick="window.location.href='${pageContext.request.contextPath}/view/books.jsp'">
         <div class="stat-icon">📚</div>
@@ -238,7 +238,7 @@
             try {
                 BorrowDAO borrowDAO = new BorrowDAO();
                 List<Borrow> recentActivity = borrowDAO.getAllDetailedBorrows();
-
+                
                 // Sort by borrow date (most recent first) if possible
                 if (recentActivity != null && !recentActivity.isEmpty()) {
                     Collections.sort(recentActivity, new Comparator<Borrow>() {
@@ -249,7 +249,7 @@
                             return b2.getBorrowDate().compareTo(b1.getBorrowDate());
                         }
                     });
-
+                    
                     // Limit to 5 items
                     int displayLimit = Math.min(recentActivity.size(), 5);
                     for (int i = 0; i < displayLimit; i++) {
@@ -262,8 +262,8 @@
             <td><%= borrow.getBorrowDate() != null ? borrow.getBorrowDate() : "Unknown" %></td>
         </tr>
         <%
-            }
-        } else {
+                    }
+                } else {
         %>
         <tr>
             <td colspan="4">No recent activity found.</td>
