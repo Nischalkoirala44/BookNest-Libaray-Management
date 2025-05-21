@@ -177,7 +177,7 @@
     <% if (request.getAttribute("errorMessage") != null) { %>
     <p class="error"><%= request.getAttribute("errorMessage") %></p>
     <% } %>
-
+    
     <form class="book-form" action="${pageContext.request.contextPath}/AddBookServlet" method="post" enctype="multipart/form-data">
         <input type="text" name="title" placeholder="Book Title" required>
         <input type="text" name="author" placeholder="Author" required>
