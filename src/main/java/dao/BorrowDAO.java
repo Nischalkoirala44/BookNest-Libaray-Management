@@ -164,7 +164,7 @@ public class BorrowDAO {
     }
 
     public void applyPenaltyForUser(int userId) {
-        String sql = "UPDATE borrows SET penalty = DATEDIFF(CURDATE(), due_date) * 100 " +
+        String sql = "UPDATE borrows SET penalty = 100 " +
                 "WHERE userId = ? AND CURDATE() > due_date";
 
         try (Connection conn = DBConnection.getDbConnection();
