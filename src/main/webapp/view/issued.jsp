@@ -107,9 +107,10 @@
 <body>
 <div class="sidebar">
     <h2>📚 BookNest</h2>
-    <a href="${pageContext.request.contextPath}/view/adminPanel.jsp">Dashboard</a>
+    <a href="${pageContext.request.contextPath}/admin-dashboard">Dashboard</a>
+    <a href="${pageContext.request.contextPath}/view/books.jsp">Books</a>
     <a href="${pageContext.request.contextPath}/view/users.jsp">Users</a>
-    <a href="${pageContext.request.contextPath}/issuedBooks" class="active" >History</a>
+    <a href="${pageContext.request.contextPath}/issuedBooks" class="active">History</a>
     <a href="${pageContext.request.contextPath}/view/register.jsp">Logout</a>
 </div>
 
