@@ -1,9 +1,12 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="dao.BookDAO,model.Book,java.util.List" %>
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookHive Admin Dashboard</title>
+    <title>Manage Books - BookHive</title>
     <style>
         * {
             box-sizing: border-box;
@@ -15,7 +18,7 @@
         body {
             display: flex;
             height: 100vh;
-            background: linear-gradient(to right, #f9f9f9, #e6f0ff);
+            background: linear-gradient(to right, #eef2f3, #e6f0ff);
         }
 
         .sidebar {
@@ -50,43 +53,49 @@
             flex: 1;
             padding: 30px;
             background-color: #f2f6ff;
+            overflow-y: auto;
         }
 
-        .main h1 {
-            margin-bottom: 20px;
+        h1 {
+            text-align: center;
             color: #333;
-        }
-
-        .cards {
-            display: flex;
-            gap: 20px;
             margin-bottom: 30px;
+        }
+
+        .book-form {
+            display: flex;
             flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 40px;
+            justify-content: space-between;
         }
 
-        .card {
+        .book-form input, .book-form select {
             flex: 1;
-            min-width: 220px;
-            background: linear-gradient(to top right, #ff6a00, #ee0979);
+            padding: 12px 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .book-form input:focus {
+            border-color: #4e54c8;
+        }
+
+        .book-form button {
+            padding: 12px 20px;
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
             color: white;
-            padding: 20px;
-            border-radius: 12px;
-            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
         }
 
-        .card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-
-        .card h3 {
-            margin-bottom: 10px;
-            font-size: 1.2em;
-        }
-
-        .card p {
-            font-size: 1.5em;
-            font-weight: bold;
+        .book-form button:hover {
+            background: linear-gradient(to right, #8f94fb, #4e54c8);
+            transform: scale(1.05);
         }
 
         table {
@@ -95,13 +104,13 @@
             background-color: white;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         th, td {
-            padding: 14px 20px;
+            padding: 14px 18px;
             text-align: left;
-            border-bottom: 1px solid #eaeaea;
+            border-bottom: 1px solid #f0f0f0;
         }
 
         th {
@@ -110,10 +119,47 @@
         }
 
         tr:hover {
-            background-color: #f0f4ff;
+            background-color: #f7f9ff;
         }
+
+        .actions button {
+            margin-right: 8px;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s;
+            width: 80px;
+            margin-top: 1px;
+        }
+
+        .edit-btn {
+            background-color: #36d1dc;
+        }
+
+        .edit-btn:hover {
+            background-color: #2bb6c4;
+        }
+
+        .delete-btn {
+            background-color: #ff6a6a;
+        }
+
+        .delete-btn:hover {
+            background-color: #e65c5c;
+        }
+
         .sidebar .active {
             background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Added styles for table images */
+        td img {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
         }
     </style>
 </head>
@@ -121,57 +167,79 @@
 <div class="sidebar">
     <h2>📚 BookNest</h2>
     <a href="${pageContext.request.contextPath}/view/adminPanel.jsp" class="active">Dashboard</a>
-    <a href="${pageContext.request.contextPath}/view/books.jsp">Books</a>
     <a href="${pageContext.request.contextPath}/view/users.jsp">Users</a>
     <a href="${pageContext.request.contextPath}/issuedBooks">History</a>
     <a href="${pageContext.request.contextPath}/view/register.jsp">Logout</a>
 </div>
 
 <div class="main">
-    <h1>Admin Dashboard</h1>
+    <h1>📚 Manage Books</h1>
+    <% if (request.getAttribute("errorMessage") != null) { %>
+    <p class="error"><%= request.getAttribute("errorMessage") %></p>
+    <% } %>
+    <form class="book-form" action="${pageContext.request.contextPath}/AddBookServlet" method="post" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Book Title" required>
+        <input type="text" name="author" placeholder="Author" required>
+        <input type="number" name="totalCopies" placeholder="Total Copies" min="1" required>
+        <select id="category" name="category" required>
+            <option value="Fiction">Fiction</option>
+            <option value="Non-Fiction">Non-Fiction</option>
+            <option value="Science">Science</option>
+            <option value="History">History</option>
+            <option value="Biography">Biography</option>
+            <option value="Fantasy">Fantasy</option>
+        </select>
+        <input type="file" id="bookImage" name="bookImage" accept="image/*">
+        <button type="submit" value="Add Book">Add Book</button>
+        <input type="button" value="Cancel" onclick="window.location.href='${pageContext.request.contextPath}/view/books.jsp'">
+    </form>
 
-    <div class="cards">
-        <div class="card">
-            <h3>Total Books</h3>
-            <p>850</p>
-        </div>
-        <div class="card" style="background: linear-gradient(to top right, #00c6ff, #0072ff);">
-            <h3>Total Users</h3>
-            <p>342</p>
-        </div>
-        <div class="card" style="background: linear-gradient(to top right, #36d1dc, #5b86e5);">
-            <h3>Books Issued</h3>
-            <p>120</p>
-        </div>
-    </div>
-
-    <h2>Recently Added Books</h2>
     <table>
         <tr>
+            <th>Image</th>
             <th>Title</th>
             <th>Author</th>
+            <th>Total Copies</th>
             <th>Category</th>
-            <th>Date Added</th>
+            <th>Actions</th>
         </tr>
+        <%
+            BookDAO bookDAO = new BookDAO();
+            try {
+                List<Book> books = bookDAO.getAllBooks();
+                for (Book book : books) {
+        %>
         <tr>
-            <td>Learn JavaScript</td>
-            <td>Mark Twain</td>
-            <td>Programming</td>
-            <td>April 15, 2025</td>
+            <td><img src="${pageContext.request.contextPath}/BookImageServlet?bookId=<%= book.getBookId() %>" alt="<%= book.getTitle() %>"></td>
+            <td><%= book.getTitle() %></td>
+            <td><%= book.getAuthor() %></td>
+            <td><%= book.getTotalCopies() %></td>
+            <td><%= book.getCategory() %></td>
+            <td class="actions">
+                <button class="edit-btn"><a href="editBookForm.jsp?bookId=<%= book.getBookId()%>" style="color: white; text-decoration: none">Edit</a></button>
+                <form action="${pageContext.request.contextPath}/deleteBook" method="post">
+                    <input type="hidden" name="bookId" value="<%= book.getBookId() %>" />
+                    <button style="background-color: #ff6a6a;" type="submit" onclick="return confirm('Are you sure you want to delete this book?');">
+                        Delete
+                    </button>
+                </form>
+            </td>
         </tr>
-        <tr>
-            <td>Mastering CSS</td>
-            <td>Jane Doe</td>
-            <td>Web Design</td>
-            <td>April 12, 2025</td>
-        </tr>
-        <tr>
-            <td>Database Systems</td>
-            <td>John Smith</td>
-            <td>Technology</td>
-            <td>April 10, 2025</td>
-        </tr>
+        <%
+                }
+            } catch (Exception e) {
+                out.println("Error: " + e.getMessage());
+            }
+        %>
     </table>
+
 </div>
+<script>
+    document.getElementById('addBookForm').addEventListener('submit', function () {
+        const now = new Date();
+        const formattedDateTime = now.toISOString();
+        document.getElementById('addedDateTime').value = formattedDateTime;
+    });
+</script>
 </body>
 </html>

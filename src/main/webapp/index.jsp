@@ -449,9 +449,8 @@
         <nav class="navbar">
             <a href="index.jsp" class="logo">Book<span>Nest</span></a>
             <ul class="nav-links">
-                <li><a href="#">Home</a></li>
+                <li><a href="#" style="color: var(--primary-color);">Home</a></li>
                 <li><a href="view/about.jsp">About</a></li>
-                <li><a href="view/contact.jsp">Contact</a></li>
             </ul>
             <div class="auth-buttons">
                 <a href="view/login.jsp" class="login-btn">Login</a>
@@ -469,9 +468,9 @@
                 <h1>Find Your Next Great Read</h1>
                 <p>Explore thousands of books across all genres. Log in to start your reading journey!</p>
                 <% if (session.getAttribute("user") == null) { %>
-                <a href="view/login.jsp" class="cta-btn">Browse Books</a>
+                <a href="view/login.jsp" class="cta-btn">Login Now</a>
                 <% } else { %>
-                <a href="view/books.jsp" class="cta-btn">Browse Books</a>
+                <a href="view/browse.jsp" class="cta-btn">Browse Books</a>
                 <% } %>
             </div>
             <div class="hero-image">

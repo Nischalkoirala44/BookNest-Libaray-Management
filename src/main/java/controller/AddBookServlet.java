@@ -42,7 +42,7 @@ public class AddBookServlet extends HttpServlet {
             int totalCopies = Integer.parseInt(totalCopiesStr);
             Book newBook = new Book(title, author, totalCopies, category, bookImage);
             bookDAO.insertBook(newBook);
-            response.sendRedirect(request.getContextPath() + "/view/books.jsp");
+            response.sendRedirect(request.getContextPath() + "/view/adminPanel.jsp");
 
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "Invalid number format.");

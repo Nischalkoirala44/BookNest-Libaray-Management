@@ -36,10 +36,7 @@ public class SearchBookServlet extends HttpServlet {
 
             // Step 1: Initial Search
 
-            if (author != null && !author.isEmpty()) {
-                // Search by author if author is selected
-                books = bookDAO.searchByAuthor(author);
-            } else if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            if (searchTerm != null && !searchTerm.trim().isEmpty()) {
                 // General search by title if search term exists
                 books = bookDAO.searchByTitle(searchTerm);
             } else {

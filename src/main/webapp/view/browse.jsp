@@ -62,66 +62,77 @@
         }
 
         .search-filter-container {
-            background-color: white;
+            background-color: #ffffff;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
             margin-bottom: 30px;
         }
-
         .search-bar {
             display: flex;
-            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-
         .search-input {
             flex: 1;
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px 0 0 5px;
+            min-width: 200px;
+            padding: 10px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
             font-size: 16px;
+            color: #6b7280;
         }
-
         .search-btn {
-            background-color: var(--primary-color);
+            background-color: #f28c82; /* Orange from image */
             color: white;
             border: none;
-            padding: 0 20px;
-            border-radius: 0 5px 5px 0;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: 600;
             transition: background-color 0.3s;
         }
-
         .search-btn:hover {
-            background-color: var(--primary-hover);
+            background-color: #e57373; /* Darker orange on hover */
         }
-
         .filters {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
         }
-
         .filter-group {
             flex: 1;
             min-width: 200px;
         }
-
         .filter-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: 500;
-            color: var(--light-text);
+            color: #6b7280;
+            font-size: 14px;
         }
-
         .filter-group select {
             width: 100%;
             padding: 10px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #d1d5db;
             border-radius: 5px;
             background-color: white;
             font-size: 16px;
+            color: #333;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .search-bar {
+                flex-direction: column;
+            }
+            .search-input {
+                border-radius: 5px;
+            }
+            .search-btn {
+                width: 100%;
+                border-radius: 5px;
+            }
         }
 
         .books-grid {
@@ -363,21 +374,6 @@
             color: var(--light-text);
             text-align: center;
             padding: 20px;
-        }
-
-        /* Success Message */
-        .success-message {
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-            animation: slideIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 2.5s;
         }
 
         @keyframes slideIn {
@@ -640,53 +636,6 @@
         </div>
     </div>
 </div>
-
-<!-- Footer -->
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Our Story</a></li>
-                    <li><a href="#">Team</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Press</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Resources</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">FAQs</a></li>
-                    <li><a href="#">Community Guidelines</a></li>
-                    <li><a href="#">Tutorials</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Legal</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Cookie Policy</a></li>
-                    <li><a href="#">Copyright</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Email Us</a></li>
-                    <li><a href="#">Support</a></li>
-                    <li><a href="#">Feedback</a></li>
-                    <li><a href="#">Report an Issue</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2025 Book Nest. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
 
 <!-- JavaScript for Modals and Logging -->
 <script>

@@ -335,7 +335,12 @@
         .dropdown-menu {
             width: 150px;
         }
+
+        .user-profile {
+            display: none;
+        }
     }
+
 
 </style>
 <head>

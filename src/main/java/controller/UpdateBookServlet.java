@@ -1,6 +1,7 @@
 package controller;
 
 import dao.BookDAO;
+import jakarta.servlet.annotation.MultipartConfig;
 import model.Book;
 
 import jakarta.servlet.ServletException;
@@ -11,7 +12,16 @@ import java.io.InputStream;
 import java.sql.SQLException;
 
 @WebServlet("/updateBook")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
+        maxFileSize = 1024 * 1024 * 5,  // 5MB
+        maxRequestSize = 1024 * 1024 * 10) // 10MB
 public class UpdateBookServlet extends HttpServlet {
+
+    @Override
+    public void init() throws ServletException {
+        System.out.println("UpdateBookServlet initialized");
+    }
+
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -22,7 +32,6 @@ public class UpdateBookServlet extends HttpServlet {
         int totalCopies = Integer.parseInt(request.getParameter("totalCopies"));
         String category = request.getParameter("category");
 
-        // Get image as InputStream (if uploaded)
         InputStream bookImage = null;
         Part filePart = request.getPart("bookImage");
         if (filePart != null && filePart.getSize() > 0) {
@@ -36,23 +45,26 @@ public class UpdateBookServlet extends HttpServlet {
         book.setTotalCopies(totalCopies);
         book.setCategory(category);
         if (bookImage != null) {
-            book.setBookImage(bookImage); // assumes Book uses InputStream for image
+            book.setBookImage(bookImage);
         }
 
         BookDAO bookDAO = new BookDAO();
         try {
             boolean success = (bookImage != null)
                     ? bookDAO.updateBook(book)
-                    : bookDAO.updateBookWithoutImage(book);  // you must create this method if needed
+                    : bookDAO.updateBookWithoutImage(book);
 
             if (success) {
-                response.sendRedirect("books.jsp"); // redirect to book listing page
+                response.sendRedirect(request.getContextPath() + "/view/adminPanel.jsp");
+                System.out.println("Book updated successfully");
             } else {
                 request.setAttribute("errorMessage", "Failed to update book.");
-                request.getRequestDispatcher("update-book.jsp").forward(request, response);
+                request.getRequestDispatcher("editBookForm.jsp").forward(request, response);
+                System.out.println("Failed to Update book");
             }
         } catch (SQLException e) {
             throw new ServletException("DB error: " + e.getMessage(), e);
         }
     }
+
 }
