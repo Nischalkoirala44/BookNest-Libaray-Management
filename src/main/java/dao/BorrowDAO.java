@@ -235,4 +235,53 @@ public class BorrowDAO {
 
         return borrowList;
     }
+
+    /**
+     * Gets the most recent borrows for display on the dashboard
+     * 
+     * @param limit The maximum number of records to return
+     * @return List of the most recent Borrow objects
+     * @throws SQLException if a database error occurs
+     */
+    public List<Borrow> getRecentBorrows(int limit) {
+        List<Borrow> borrowList = new ArrayList<>();
+        String sql = "SELECT b.borrowId, b.userId, b.bookid, b.borrow_date, b.due_date, " +
+                "u.name, bk.title, bk.author, bk.category " +
+                "FROM borrows b " +
+                "JOIN users u ON b.userId = u.userId " +
+                "JOIN book bk ON b.bookid = bk.bookid " +
+                "ORDER BY b.borrow_date DESC " +
+                "LIMIT ?";
+
+        try (Connection conn = DBConnection.getDbConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Borrow borrow = new Borrow();
+                borrow.setBorrowId(rs.getInt("borrowId"));
+                borrow.setUserId(rs.getInt("userId"));
+                borrow.setBookId(rs.getInt("bookid"));
+                borrow.setBorrowDate(rs.getDate("borrow_date"));
+                borrow.setDueDate(rs.getDate("due_date"));
+                borrow.setName(rs.getString("name"));
+
+                Book book = new Book();
+                book.setBookId(rs.getInt("bookid"));
+                book.setTitle(rs.getString("title"));
+                book.setAuthor(rs.getString("author"));
+                book.setCategory(rs.getString("category"));
+
+                borrow.setBook(book);
+                borrowList.add(borrow);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return borrowList;
+    }
 }
