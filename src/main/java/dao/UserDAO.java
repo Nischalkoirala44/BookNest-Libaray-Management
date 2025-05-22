@@ -21,30 +21,43 @@ public class UserDAO {
             "SELECT * FROM users";
 
     public static int registerUser(User user) {
-        try (Connection connection = DBConnection.getDbConnection();
-             PreparedStatement ps = connection.prepareStatement(INSERT_USER, Statement.RETURN_GENERATED_KEYS)) {
+        String sql = "INSERT INTO users (name, email, password, role, profile_picture, bio, address) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getEmail());
+        try (Connection conn = DBConnection.getDbConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getEmail());
             String hashedPassword = PasswordUtil.hashPassword(user.getPassword());
-            ps.setString(3, hashedPassword);
-            ps.setString(4, user.getRole().name());
-            ps.setBytes(5, user.getProfilePicture());
-            ps.setString(6, user.getBio());
-            ps.setString(7,user.getAddress());
+            stmt.setString(3, hashedPassword);
+            stmt.setString(4, user.getRole().toString());
+            stmt.setBytes(5, user.getProfilePicture());
+            stmt.setString(6, user.getBio());
+            stmt.setString(7, user.getAddress());
 
-            int rows = ps.executeUpdate();
-            if (rows > 0) {
-                ResultSet generatedKeys = ps.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
                 }
             }
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+            if (e.getErrorCode() == 1062) {
+                System.out.println("Email already exists: " + user.getEmail());
+                return -1;
+            } else {
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
-            throw new RuntimeException("Database error during registration", e);
+            e.printStackTrace();
         } catch (Exception e) {
-            throw new RuntimeException("Encryption error", e);
+            throw new RuntimeException(e);
         }
+
         return -1;
     }
 
